@@ -2,6 +2,17 @@
 
 > Note: This project is intended for internal or enterprise use, as it requires credentials and configuration files typically provided by your organization.
 
+## macOS Version Compatibility
+
+This repository contains two branches for different macOS versions:
+
+- **`main`** - For **macOS Tahoe (26.1)** and newer
+- **`sequoia`** - For **macOS Sequoia** and older versions
+
+Make sure to use the appropriate branch for your macOS version. The UI hierarchy changed significantly in Tahoe, requiring different element paths.
+
+## Overview
+
 This project automates the login process for **Citrix Secure Access** on macOS using AppleScript and `expect`. AppleScript is used to control UI interactions, while `expect` handles terminal automation such as entering passwords or responding to prompts.
 
 It performs the following steps:
