@@ -43,28 +43,40 @@ tell application "System Events"
             delay 0.5 -- Check every 0.5 seconds
         end repeat
 
-        -- Wait dynamically for the input fields to appear
+        -- Wait dynamically for the input fields to appear (new hierarchy in macOS Tahoe)
         tell window "Citrix Secure Access auth"
-            repeat until (exists group 3 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1)
-                delay 0.5 -- Check every 0.5 seconds
-            end repeat
+            tell group 1
+                tell group 1
+                    tell scroll area 1
+                        tell UI element 1 -- Web Area
+                            tell UI element 1 -- First nested group
+                                tell UI element 1 -- Second nested group
+                                    repeat until (exists UI element 3)
+                                        delay 0.5 -- Check every 0.5 seconds
+                                    end repeat
 
-            -- Enter the username
-            tell group 3 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1
-                set value of text field 1 to citrixUser
-            end tell
+                                    -- Enter the username (Group 3)
+                                    tell UI element 3
+                                        set value of text field 1 to citrixUser
+                                    end tell
 
-            -- Enter the password
-            tell group 5 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1
-                set value of text field 1 to citrixPassword
-            end tell
+                                    -- Enter the password (Group 5)
+                                    tell UI element 5
+                                        set value of text field 1 to citrixPassword
+                                    end tell
 
-            -- Retrieve the OTP using the `get_token.sh` script
-            set otpCode to do shell script scriptDir & "/utils/get_token.sh | tail -n 1"
+                                    -- Retrieve the OTP using the `get_token.sh` script
+                                    set otpCode to do shell script scriptDir & "/utils/get_token.sh | tail -n 1"
 
-            -- Enter the OTP into the passcode field
-            tell group 7 of group 1 of UI element 1 of scroll area 1 of group 1 of group 1
-                set value of text field 1 to otpCode
+                                    -- Enter the OTP into the passcode field (Group 7)
+                                    tell UI element 7
+                                        set value of text field 1 to otpCode
+                                    end tell
+                                end tell
+                            end tell
+                        end tell
+                    end tell
+                end tell
             end tell
         end tell
     end tell
