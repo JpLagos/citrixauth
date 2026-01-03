@@ -79,3 +79,6 @@ $RECYCLE.BIN/
 
 # Configuration file
 utils/config.sh
+
+# IDE/Editor files
+.vscode/
