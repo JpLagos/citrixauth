@@ -82,3 +82,6 @@ utils/config.sh
 
 # IDE/Editor files
 .vscode/
+
+# Claude Code internals
+.atl/

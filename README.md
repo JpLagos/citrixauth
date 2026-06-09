@@ -83,19 +83,15 @@ git clone https://github.com/sebasalas/citrixauth.git
 cd citrixauth
 ```
 
-2. Create and edit the `utils/config.sh` file to include your credentials:
+2. Store your credentials in macOS Keychain by running the setup script once:
 
 ```bash
-# utils/config.sh
-export CITRIX_USER="YOUR_USERNAME"  # Your Citrix username
-export CITRIX_PASSWORD="YOUR_PASSWORD"  # Your Citrix password
-export TOKEN_PASSWORD="YOUR_STOKEN_PASSWORD"  # Your stoken password used to unlock OTPs
-export CITRIX_SCRIPT_DIR="$HOME/Documents/citrixauth"  # Path to the project directory
+bash utils/setup-keychain.sh
 ```
 
-The scripts dynamically locate `config.sh` and other files using the `CITRIX_SCRIPT_DIR` variable. Ensure this variable is correctly set in `config.sh` and matches the project location on your system.
+You will be prompted for your Citrix username, Citrix password, and stoken master password. Credentials are stored encrypted in the macOS Keychain and never written to disk in plain text.
 
-> Important: Never commit `config.sh` to version control, as it contains sensitive information. Confirm that `utils/config.sh` is listed in `.gitignore`.
+> Note: To update a credential later, simply run `setup-keychain.sh` again — it overwrites the existing entry.
 
 3. Make the script executable:
 
@@ -105,13 +101,7 @@ chmod +x utils/get_token.sh
 
 ## Usage
 
-1. Load the configuration file to set environment variables:
-
-```bash
-source utils/config.sh
-```
-
-2. Launch the automation script:
+Launch the automation script:
 
 ```bash
 osascript citrixauth.scpt
@@ -147,17 +137,16 @@ osascript citrixauth.scpt
 
 ```bash
 citrixauth/
-├── citrixauth.scpt # Main AppleScript automation
+├── citrixauth.scpt        # Main AppleScript automation
 ├── utils/
-│   ├── get_token.sh # OTP retrieval using `stoken`
-│   ├── config.sh # User-specific configuration (excluded from Git)
-└── README.md # Project documentation
+│   ├── get_token.sh       # OTP retrieval using stoken
+│   ├── setup-keychain.sh  # One-time credential setup (stores to macOS Keychain)
+│   └── config.sh          # User-specific overrides if needed (excluded from Git)
+└── README.md              # Project documentation
 ```
-
-> Note: The `config.sh` file must be created manually by each user and should never be committed to the repository.
 
 ## Security Best Practices
 
-- **Do not share your `config.sh` file**. It contains sensitive credentials.
-- Use configuration files to keep credentials secure and easy to manage.
-- **Always add `utils/config.sh` to `.gitignore`** to prevent accidental uploads.
+- Credentials are stored in **macOS Keychain**, not in plain text files.
+- `utils/config.sh` is excluded from Git via `.gitignore` — do not remove that entry.
+- Never share or commit any file containing your Citrix password or stoken master password.
