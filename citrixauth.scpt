@@ -60,38 +60,37 @@ tell application "System Events"
         -- Get OTP now (while form is loading)
         set otpCode to do shell script scriptDir & "/get_token.sh | tail -n 1"
 
-        -- Wait for the input fields to appear (new hierarchy in macOS Tahoe)
+        -- Wait for the input fields and fill the form
         tell window "Citrix Secure Access auth"
             tell group 1
                 tell group 1
                     tell scroll area 1
-                        tell UI element 1 -- Web Area
-                            tell UI element 1 -- First nested group
-                                tell UI element 1 -- Second nested group
-                                    set waitCount to 0
-                                    repeat until (exists UI element 3)
-                                        delay 0.2
-                                        set waitCount to waitCount + 1
-                                        if waitCount >= maxWait then
-                                            error "Timeout: Login form fields did not appear after 30 seconds." number -1
-                                        end if
-                                    end repeat
+                        tell UI element 1
+                            tell group 1
+                                set waitCount to 0
+                                repeat until (exists group 3)
+                                    delay 0.2
+                                    set waitCount to waitCount + 1
+                                    if waitCount >= maxWait then
+                                        error "Timeout: Login form fields did not appear after 30 seconds." number -1
+                                    end if
+                                end repeat
 
-                                    -- Enter the username (Group 3)
-                                    tell UI element 3
-                                        set value of text field 1 to citrixUser
-                                    end tell
+                                click text field 1 of group 3
+                                delay 0.2
+                                keystroke "a" using {command down}
+                                keystroke citrixUser
 
-                                    -- Enter the password (Group 5)
-                                    tell UI element 5
-                                        set value of text field 1 to citrixPassword
-                                    end tell
+                                keystroke tab
+                                delay 0.2
+                                keystroke citrixPassword
 
-                                    -- Enter the OTP (Group 7)
-                                    tell UI element 7
-                                        set value of text field 1 to otpCode
-                                    end tell
-                                end tell
+                                keystroke tab
+                                delay 0.2
+                                keystroke otpCode
+
+                                delay 0.2
+                                click UI element "Enviar"
                             end tell
                         end tell
                     end tell
@@ -99,12 +98,6 @@ tell application "System Events"
             end tell
         end tell
     end tell
-end tell
-
--- Submit the form
-tell application "System Events"
-    delay 0.2
-    key code 36 -- Return key
 end tell
 
 log "Citrix login submitted successfully."
